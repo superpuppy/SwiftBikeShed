@@ -1,5 +1,4 @@
-//: Playground - noun: a place where people can play
-
+//: ***Swift Bike Shed Playground*** - a scratch pad to play with the Bike Shed exercises
 import Cocoa
 
 /* http://codekata.com/kata/kata02-karate-chop/
@@ -30,11 +29,10 @@ extension ArraySlice where Element : Comparable {
 Guess #2 self.startIndex self.endIndex?
 */
 
-extension ArraySlice where Element : Comparable {
-    // do something here?
-}
+//extension ArraySlice where Element : Comparable {
+//}
 
-func recursiveBinaryChop(target: Int, numbers: [Int]) -> Int
+func recursiveBinaryChop(target: Int, numbers: ArraySlice<Int>) -> Int
 {
     var max = numbers.count - 1
     var min = 0
@@ -46,10 +44,11 @@ func recursiveBinaryChop(target: Int, numbers: [Int]) -> Int
         if (numbers[guess] == target) {
             return guess
         } else if (numbers[guess] > target) {
-            max = guess - 1
-            recursiveBinaryChop(target, numbers: numbers[(min..<max)])
+            max = guess //sets the "past-the-end" element index
+            return recursiveBinaryChop(target, numbers: numbers[(min..<max)])
         } else {
-            min = guess + 1
+            min = guess
+            return recursiveBinaryChop(target, numbers: numbers[(min..<max)])
         }
     }
     return -1
@@ -63,7 +62,7 @@ assert(recursiveBinaryChop(1, numbers: [1]) == 0)
 
 //assert(recursiveBinaryChop(1, numbers: [1, 3, 5]) == 0)
 //assert(recursiveBinaryChop(3, numbers: [1, 3, 5]) == 1)
-//assert(recursiveBinaryChop(5, numbers: [1, 3, 5]) == 2)
+assert(recursiveBinaryChop(5, numbers: [1, 3, 5]) == 2)
 /*
 assert(recursiveBinaryChop(0, numbers: [1, 3, 5]) == -1)
 assert(recursiveBinaryChop(2, numbers: [1, 3, 5]) == -1)
