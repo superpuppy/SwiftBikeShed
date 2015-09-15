@@ -1,5 +1,12 @@
-//: ***Swift Bike Shed Playground*** - a scratch pad to play with the Bike Shed exercises
-import Cocoa
+//
+//  RecursiveKarateChop.swift
+//  
+//
+//  Created by Kristina Sontag on 9/15/15.
+//
+//
+
+import Foundation
 
 /* http://codekata.com/kata/kata02-karate-chop/
 *  Specification:
@@ -41,11 +48,11 @@ LESSONS LEARNED (so far...):
 
 func recursiveBinaryChop(target: Int, numbers: ArraySlice<Int>) -> Int
 {
-//    print("start of func")
-//    print("numbers = \(numbers.description)")
+    //    print("start of func")
+    //    print("numbers = \(numbers.description)")
     
     if (numbers.isEmpty) { return -1 }
-
+    
     // since ArraySlices retain the original array indexcies, set up our max and min to the current start and end
     var max = numbers.endIndex
     var min = numbers.startIndex
@@ -55,9 +62,9 @@ func recursiveBinaryChop(target: Int, numbers: ArraySlice<Int>) -> Int
         // select the middle element as our guess
         let guess = Int(floor(Double((max + min) / 2)))
         
-//        print("target = \(target)")
-//        print("current guess = \(guess)")
-//        print("element = \(numbers[guess])")
+        //        print("target = \(target)")
+        //        print("current guess = \(guess)")
+        //        print("element = \(numbers[guess])")
         
         // test to see if our element contains the target, if so, done!
         if (numbers[guess] == target) {
@@ -68,10 +75,10 @@ func recursiveBinaryChop(target: Int, numbers: ArraySlice<Int>) -> Int
             min = guess + 1
         }
         
-//        print("maxIndex = \(max)")
-//        print("minIndex = \(min)")
-//        print("numbers = \(numbers.description)")
-//        print("numbers[(minIndex..<maxIndex)] = \(numbers[(min..<max)])")
+        //        print("maxIndex = \(max)")
+        //        print("minIndex = \(min)")
+        //        print("numbers = \(numbers.description)")
+        //        print("numbers[(minIndex..<maxIndex)] = \(numbers[(min..<max)])")
         
         // right, recurse with our new ArraySlice!!
         return recursiveBinaryChop(target, numbers: numbers[(min..<max)])
