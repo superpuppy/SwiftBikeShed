@@ -20,6 +20,7 @@ import Cocoa
 */
 
 /*
+HINTS:
 https://twitter.com/gregtitus/status/643652546293174272
 Guess #1 you may be looking for:
 
@@ -29,41 +30,76 @@ extension ArraySlice where Element : Comparable {
 Guess #2 self.startIndex self.endIndex?
 */
 
-//extension ArraySlice where Element : Comparable {
-//}
+/*
+LESSONS LEARNED:
+0) print() still rules the roost for debugging
+1) ArraySlice<Int> is not directly comparable to [Int]
+2) ArraySlices are a window into an Array, AND RETAIN THE INDEXES OF THE ORIGINAL ARRAY
+3) Probably a better way to do this with extensions based on Greg's hint
+4) All these return points make me twitchy!!
+*/
+
+extension ArraySlice where Element : Comparable {
+}
 
 func recursiveBinaryChop(target: Int, numbers: ArraySlice<Int>) -> Int
 {
-    var max = numbers.count - 1
-    var min = 0
-    var guess = Int(floor(Double((max + min) / 2)))
+    if (numbers.isEmpty) { return -1 }
+
+    // since ArraySlices retain the original array indexcies, set up our max and min to the current start and end
+    var max = numbers.endIndex
+    var min = numbers.startIndex
+    
+    // BUG: since we're not adding or subtracting from guess to set the next array slice, this will never end
+    //      but, adding/subracting changes the indexices, which doesn't fly in an ArraySlice
     
     while (max >= min)
     {
-        guess = Int(floor(Double((max + min) / 2)))
+        // select the middle element as our guess
+        let guess = Int(floor(Double((max + min) / 2)))
+        
+        // test to see if our guess is the target, if so, done!
         if (numbers[guess] == target) {
             return guess
-        } else if (numbers[guess] > target) {
-            max = guess //sets the "past-the-end" element index
-            return recursiveBinaryChop(target, numbers: numbers[(min..<max)])
-        } else {
-            min = guess
-            return recursiveBinaryChop(target, numbers: numbers[(min..<max)])
+        } else if (numbers[guess] > target) { // ok, is our guess too big? trim off the larger numbers
+            max = guess - 1
+        } else { // is our guess too small? trim off the smaller numbers
+            min = guess + 1
         }
+        
+        print("target = \(target)")
+        print("current guess = \(guess)")
+        print("maxIndex = \(max)")
+        print("minIndex = \(min)")
+        print("numbers = \(numbers.description)")
+//        print("numbers[(minIndex..<maxIndex)] = \(numbers[(min..<max)])")
+//        print(numbers[0..<1])
+        
+        // ok, after all that, is max still >= min?
+        if (max < min) { break }
+        
+        if (max == min) {
+            if (numbers[min] == target) {
+                return min
+            } else {
+                return -1
+            }
+        }
+        
+        // right, recurse with our new ArraySlice!!
+        return recursiveBinaryChop(target, numbers: numbers[(min..<max)])
     }
+    // huh, no dice. guess our number doesn't exist in the array
     return -1
 }
 
-/*
 assert(recursiveBinaryChop(3, numbers: []) == -1)
 assert(recursiveBinaryChop(3, numbers: [1]) == -1)
 assert(recursiveBinaryChop(1, numbers: [1]) == 0)
-*/
 
-//assert(recursiveBinaryChop(1, numbers: [1, 3, 5]) == 0)
-//assert(recursiveBinaryChop(3, numbers: [1, 3, 5]) == 1)
+assert(recursiveBinaryChop(1, numbers: [1, 3, 5]) == 0)
+assert(recursiveBinaryChop(3, numbers: [1, 3, 5]) == 1)
 assert(recursiveBinaryChop(5, numbers: [1, 3, 5]) == 2)
-/*
 assert(recursiveBinaryChop(0, numbers: [1, 3, 5]) == -1)
 assert(recursiveBinaryChop(2, numbers: [1, 3, 5]) == -1)
 assert(recursiveBinaryChop(4, numbers: [1, 3, 5]) == -1)
@@ -78,4 +114,3 @@ assert(recursiveBinaryChop(2, numbers: [1, 3, 5, 7]) == -1)
 assert(recursiveBinaryChop(4, numbers: [1, 3, 5, 7]) == -1)
 assert(recursiveBinaryChop(6, numbers: [1, 3, 5, 7]) == -1)
 assert(recursiveBinaryChop(8, numbers: [1, 3, 5, 7]) == -1)
-*/
